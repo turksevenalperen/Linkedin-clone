@@ -1,13 +1,14 @@
 // app/api/jobpost/route.ts
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function POST(req: Request) {
+export async function PUT(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions)
+  const { id } = await params
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
   try {
     const jobPosts = await prisma.jobPost.findMany({
       orderBy: { createdAt: 'desc' },

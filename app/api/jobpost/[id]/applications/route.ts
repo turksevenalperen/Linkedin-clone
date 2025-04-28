@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { PrismaClient } from '@prisma/client'
 import { authOptions } from '@/lib/auth'
@@ -6,9 +6,10 @@ import { Param } from '@prisma/client/runtime/library'
 
 const prisma = new PrismaClient()
 
-export async function GET(req: Request, context: { params: { id: string } }) {
+
+export async function GET(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions)
-  const { id } = await context.params
+  const {id} = await params
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

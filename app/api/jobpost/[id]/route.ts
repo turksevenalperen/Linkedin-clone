@@ -1,5 +1,5 @@
 // app/api/jobpost/[id]/route.ts
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { PrismaClient } from '@prisma/client'
@@ -10,15 +10,16 @@ interface Params {
   params: { id: string }
 }
 
-export async function DELETE(req: Request, { params }: Params) {
+export async function DELETE(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions)
+  const { id } = await params
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const jobPost = await prisma.jobPost.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: { author: true }
   })
 
@@ -31,21 +32,22 @@ export async function DELETE(req: Request, { params }: Params) {
   }
 
   await prisma.jobPost.delete({
-    where: { id: params.id }
+    where: { id: id }
   })
 
   return NextResponse.json({ message: 'İlan silindi.' }, { status: 200 })
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions)
+  const { id } = await params
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const jobPost = await prisma.jobPost.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: { author: true }
   })
 
@@ -60,7 +62,7 @@ export async function PUT(req: Request, { params }: Params) {
   const body = await req.json()
 
   const updatedJob = await prisma.jobPost.update({
-    where: { id: params.id },
+    where: { id: id },
     data: {
       title: body.title,
       description: body.description,

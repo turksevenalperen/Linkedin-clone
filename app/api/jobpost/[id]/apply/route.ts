@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { PrismaClient } from '@prisma/client'
@@ -9,8 +9,9 @@ interface Params {
   params: { id: string }
 }
 
-export async function POST(req: Request, { params }: Params) {
+export async function POST(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions)
+  const { id } = await params
   
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -19,7 +20,7 @@ export async function POST(req: Request, { params }: Params) {
   const existingApplication = await prisma.jobApplication.findFirst({
     where: {
       applicant: { email: session.user?.email! },
-      jobPostId: params.id,
+      jobPostId: id,
     }
   })
 
@@ -38,7 +39,7 @@ export async function POST(req: Request, { params }: Params) {
   const jobApplication = await prisma.jobApplication.create({
     data: {
       applicantId: user.id,
-      jobPostId: params.id,
+      jobPostId: id,
     },
   })
 
