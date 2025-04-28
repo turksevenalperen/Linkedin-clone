@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
-import { AuthOptions } from 'next-auth'
 import { PrismaClient } from '@prisma/client'
 import { authOptions } from '@/lib/auth'
 
 const prisma = new PrismaClient()
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, context: { params: { id: string } }) {
   const session = await getServerSession(authOptions)
 
   if (!session) {
@@ -14,7 +13,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 
   const jobPost = await prisma.jobPost.findUnique({
-    where: { id: params.id },
+    where: { id: context.params.id },
     include: { author: true },
   })
 
@@ -27,7 +26,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 
   const applications = await prisma.jobApplication.findMany({
-    where: { jobPostId: params.id },
+    where: { jobPostId: context.params.id },
     include: { applicant: true }
   })
   console.log('Başvurular:', applications)
