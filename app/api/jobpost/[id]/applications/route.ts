@@ -1,19 +1,21 @@
-/*import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { PrismaClient } from '@prisma/client'
 import { authOptions } from '@/lib/auth'
+import { Param } from '@prisma/client/runtime/library'
 
 const prisma = new PrismaClient()
 
 export async function GET(req: Request, context: { params: { id: string } }) {
   const session = await getServerSession(authOptions)
+  const { id } = await context.params
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const jobPost = await prisma.jobPost.findUnique({
-    where: { id: context.params.id },
+    where: { id: id }, 
     include: { author: true },
   })
 
@@ -26,7 +28,7 @@ export async function GET(req: Request, context: { params: { id: string } }) {
   }
 
   const applications = await prisma.jobApplication.findMany({
-    where: { jobPostId: context.params.id },
+    where: { jobPostId: id },
     include: { applicant: true }
   })
   console.log('Başvurular:', applications)
@@ -38,4 +40,5 @@ export async function GET(req: Request, context: { params: { id: string } }) {
 
   return NextResponse.json(applicants)
 }
-*/
+
+
