@@ -1,103 +1,85 @@
-import Image from "next/image";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import{ signIn } from "next-auth/react";
 
-export default function Home() {
+
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="flex flex-col items-center w-full">
+      {/* NAVBAR */}
+      <nav className="flex justify-between items-center w-full px-6 py-4 border-b">
+        <Link href="/" className="text-xl font-bold text-blue-700">
+          LinkedIn
+        </Link>
+        <div className="flex items-center gap-6 text-sm">
+          <Link href="#" className="hover:underline">Makaleler</Link>
+          <Link href="#" className="hover:underline">Kişiler</Link>
+          <Link href="#" className="hover:underline">Learning</Link>
+          <Link href="#" className="hover:underline">İş İlanları</Link>
+          <Link href="/register" className="text-blue-600 hover:underline">Hemen Katılın</Link>
+          <Link href="/login" className="border border-blue-600 text-blue-600 px-4 py-1 rounded hover:bg-blue-50">Oturumu Aç</Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </nav>
+
+      {/* HOŞ GELDİN */}
+      <section className="bg-white w-full text-center py-16 px-6">
+        <h1 className="text-black text-4xl font-bold mb-6">Profesyonel topluluğunuza hoş geldiniz!</h1>
+        <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
+       
+          <p className="text-xs text-gray-600 text-center mt-2 max-w-xs">
+            Devam Et seçeneğini tıklayarak veya oturum açarak LinkedIn Kullanıcı Anlaşması’nı, Gizlilik Politikası’nı ve Çerez Politikası’nı kabul etmiş olursunuz.
+          </p>
+          <p className="text-black text-sm mt-4">LinkedIn‘de yeni misiniz? <Link href="/signup" className="text-blue-600 hover:underline">Hemen katılın</Link></p>
+        </div>
+      </section>
+
+      {/* MESLEKLER */}
+      <section className="bg-gray-100 w-full py-16 px-6">
+        <h2 className="text-xl font-semibold mb-4 text-center text-black">Sizin için uygun olan işi veya stajı bulun</h2>
+        <div className="flex flex-wrap gap-4 justify-center text-black">
+          {[
+            "Mühendislik", "İş Geliştirme", "Finans", "Yönetici Asistanı", "Perakende Uzmanı",
+            "Müşteri Hizmetleri", "Operasyon", "Bilgi Teknolojisi", "Pazarlama", "İnsan Kaynakları"
+          ].map((item) => (
+            <button key={item} className="rounded-full bg-white px-4 py-2 border hover:bg-gray-200 text-sm">
+              {item}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* İŞ İLANI */}
+      <section className="bg-[#f3f2ef] w-full py-16 px-6 text-center">
+        <h2 className="text-xl text-black font-semibold mb-4">Milyonlarca kişinin iş ilanınızı görmesi için işinizi yayınlayın</h2>
+        <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">İş ilanı yayınla</button>
+      </section>
+
+      {/* BİLGİ SEKMESİ */}
+      <section className="bg-white w-full py-16 px-6 flex justify-center">
+        <div className="max-w-5xl w-full flex justify-between items-center">
+          <div>
+            <h3 className="text-lg text-black font-semibold">LinkedIn size nasıl yardımcı olabilir?</h3>
+            <p className="text-sm text-gray-600 mt-2"></p>
+          </div>
+          <div className="text-3xl cursor-pointer text-blue-600">→</div>
+        </div>
+      </section>
+
+      {/* KATILIM ÇAĞRISI */}
+      <section className="bg-blue-50 w-full py-12 px-6 text-center">
+        <h2 className="text-xl text-black font-semibold">LinkedIn‘deki iş arkadaşlarınıza, okul arkadaşlarınıza ve dostlarınıza katılın.</h2>
+        <button className="text-black bg-white border border-gray-400 px-6 py-2 rounded mt-4 hover:bg-gray-100">
+          Giriş Yap
+        </button>
+      </section>
+    </main>
   );
 }

@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @id @default(cuid())
+  name     String?
+  email    String    @unique
+  password String
+  image    String?
+  posts    Post[]
+  comments Comment[]
+  likes    Like[]
+  jobPosts JobPost[]
+  jobApplications JobApplication[] // 👈 başvurular
+}
+
+model JobPost {
+  id           String    @id @default(cuid())
+  title        String
+  description  String
+  requirements String
+  location     String
+  salary       String?
+  createdAt    DateTime  @default(now())
+  authorId     String
+  author       User      @relation(fields: [authorId], references: [id])
+  jobApplications JobApplication[] // 👈 bu ilana gelen başvurular
+}
+
+model JobApplication {
+  id          String   @id @default(cuid())
+  applicant   User     @relation(fields: [applicantId], references: [id])
+  applicantId String
+  jobPost     JobPost  @relation(fields: [jobPostId], references: [id])
+  jobPostId   String
+  createdAt   DateTime @default(now())
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  content   String
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id])
+  comments  Comment[]
+  likes     Like[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  postId    String
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
