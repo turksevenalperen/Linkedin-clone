@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+/*import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { PrismaClient } from '@prisma/client'
 import { authOptions } from '@/lib/auth'
@@ -38,3 +38,4 @@ export async function GET(req: Request, context: { params: { id: string } }) {
 
   return NextResponse.json(applicants)
 }
+*/
