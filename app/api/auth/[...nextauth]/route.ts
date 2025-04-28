@@ -2,7 +2,7 @@ import NextAuth, { AuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
-import { authOptions } from "@/lib/auth";
+import { authOptions as externalAuthOptions } from "@/lib/auth";
 
 
 const prisma = new PrismaClient();

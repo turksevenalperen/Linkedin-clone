@@ -6,12 +6,7 @@ import { authOptions } from '@/lib/auth'
 
 const prisma = new PrismaClient()
 
-interface Params {
-  params: { id: string }
-}
-export async function GET(req: Request, context: { params: { id: string } }) {
-  const { params } = context  // burada destructure yapıyoruz
-
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions)
 
   if (!session) {
@@ -35,8 +30,7 @@ export async function GET(req: Request, context: { params: { id: string } }) {
     where: { jobPostId: params.id },
     include: { applicant: true }
   })
-  console.log('Başvurular:', applications)  // <<< BURAYA EKLE
-
+  console.log('Başvurular:', applications)
 
   const applicants = applications.map(app => ({
     name: app.applicant.name,
