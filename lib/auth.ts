@@ -1,26 +1,11 @@
-import NextAuth, { AuthOptions, Session } from "next-auth";
+import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
-import { authOptions } from "@/lib/auth";
-
 
 const prisma = new PrismaClient();
 
-// Session tip genişletmesi
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-  }
-}
-
-// DİKKAT: Burada export yok
-const authOptions: AuthOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -61,7 +46,3 @@ const authOptions: AuthOptions = {
     },
   },
 };
-
-// Yalnızca GET ve POST export ediliyor
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
