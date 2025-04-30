@@ -1,22 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth/next'
+import { auth } from '@/auth'
 import { PrismaClient } from '@prisma/client'
-import { authOptions } from '@/lib/auth'
-import { Param } from '@prisma/client/runtime/library'
 
 const prisma = new PrismaClient()
 
-
-export async function GET(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions)
-  const {id} = await params
+export async function GET(req: NextRequest, { params }: any) {
+  const session = await auth();
+  const { id } = params;
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const jobPost = await prisma.jobPost.findUnique({
-    where: { id: id }, 
+    where: { id },
     include: { author: true },
   })
 
@@ -32,7 +29,6 @@ export async function GET(req: NextRequest,   { params }: { params: Promise<{ id
     where: { jobPostId: id },
     include: { applicant: true }
   })
-  console.log('Başvurular:', applications)
 
   const applicants = applications.map(app => ({
     name: app.applicant.name,
@@ -41,5 +37,3 @@ export async function GET(req: NextRequest,   { params }: { params: Promise<{ id
 
   return NextResponse.json(applicants)
 }
-
-

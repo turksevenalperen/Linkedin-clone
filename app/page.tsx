@@ -1,12 +1,10 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+// app/page.tsx
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import{ signIn } from "next-auth/react";
-
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  const session = await auth(); // Yeni sistemde auth() ile session alınır
 
   if (session) {
     redirect("/dashboard");
@@ -33,7 +31,6 @@ export default async function Home() {
       <section className="bg-white w-full text-center py-16 px-6">
         <h1 className="text-black text-4xl font-bold mb-6">Profesyonel topluluğunuza hoş geldiniz!</h1>
         <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
-       
           <p className="text-xs text-gray-600 text-center mt-2 max-w-xs">
             Devam Et seçeneğini tıklayarak veya oturum açarak LinkedIn Kullanıcı Anlaşması’nı, Gizlilik Politikası’nı ve Çerez Politikası’nı kabul etmiş olursunuz.
           </p>
@@ -67,7 +64,6 @@ export default async function Home() {
         <div className="max-w-5xl w-full flex justify-between items-center">
           <div>
             <h3 className="text-lg text-black font-semibold">LinkedIn size nasıl yardımcı olabilir?</h3>
-            <p className="text-sm text-gray-600 mt-2"></p>
           </div>
           <div className="text-3xl cursor-pointer text-blue-600">→</div>
         </div>
@@ -76,9 +72,12 @@ export default async function Home() {
       {/* KATILIM ÇAĞRISI */}
       <section className="bg-blue-50 w-full py-12 px-6 text-center">
         <h2 className="text-xl text-black font-semibold">LinkedIn‘deki iş arkadaşlarınıza, okul arkadaşlarınıza ve dostlarınıza katılın.</h2>
-        <button className="text-black bg-white border border-gray-400 px-6 py-2 rounded mt-4 hover:bg-gray-100">
+        <Link
+          href="/login"
+          className="inline-block text-black bg-white border border-gray-400 px-6 py-2 rounded mt-4 hover:bg-gray-100"
+        >
           Giriş Yap
-        </button>
+        </Link>
       </section>
     </main>
   );

@@ -1,16 +1,11 @@
-// app/api/jobpost/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
-import { PrismaClient } from '@prisma/client'
+import { NextResponse } from "next/server"
+import { auth } from "@/auth" // ✅ Auth.js fonksiyonu
+import { prisma } from "@/lib/prisma"
 
-const prisma = new PrismaClient()
-
-export async function PUT(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions)
-  const { id } = await params
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function POST(req: Request) {
+  const session = await auth()
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const body = await req.json()
@@ -24,25 +19,25 @@ export async function PUT(req: NextRequest,   { params }: { params: Promise<{ id
         requirements,
         location,
         salary,
-        author: { connect: { email: session.user?.email! } }
+        author: { connect: { id: session.user.id } } // ✅ artık ID kullanıyoruz
       }
     })
     return NextResponse.json(jobPost, { status: 201 })
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
   }
 }
 
-export async function GET(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
+export async function GET() {
   try {
     const jobPosts = await prisma.jobPost.findMany({
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { author: true }
     })
     return NextResponse.json(jobPosts)
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ error: 'Error fetching job posts' }, { status: 500 })
+    return NextResponse.json({ error: "Error fetching job posts" }, { status: 500 })
   }
 }

@@ -1,7 +1,6 @@
 // app/api/jobpost/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/auth'  // yeni auth sistemi
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -10,17 +9,18 @@ interface Params {
   params: { id: string }
 }
 
-export async function DELETE(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions)
-  const { id } = await params
+// DELETE
+export async function DELETE(req: NextRequest, { params }: any) {
+  const session = await auth()
+  const { id } = params
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const jobPost = await prisma.jobPost.findUnique({
-    where: { id: id },
-    include: { author: true }
+    where: { id },
+    include: { author: true },
   })
 
   if (!jobPost) {
@@ -31,24 +31,23 @@ export async function DELETE(req: NextRequest,   { params }: { params: Promise<{
     return NextResponse.json({ error: 'Sadece kendi ilanını silebilirsin.' }, { status: 403 })
   }
 
-  await prisma.jobPost.delete({
-    where: { id: id }
-  })
+  await prisma.jobPost.delete({ where: { id } })
 
   return NextResponse.json({ message: 'İlan silindi.' }, { status: 200 })
 }
 
-export async function PUT(req: NextRequest,   { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions)
-  const { id } = await params
+// PUT
+export async function PUT(req: NextRequest, { params }: any) {
+  const session = await auth()
+  const { id } = params
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const jobPost = await prisma.jobPost.findUnique({
-    where: { id: id },
-    include: { author: true }
+    where: { id },
+    include: { author: true },
   })
 
   if (!jobPost) {
@@ -62,7 +61,7 @@ export async function PUT(req: NextRequest,   { params }: { params: Promise<{ id
   const body = await req.json()
 
   const updatedJob = await prisma.jobPost.update({
-    where: { id: id },
+    where: { id },
     data: {
       title: body.title,
       description: body.description,

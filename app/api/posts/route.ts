@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/auth";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const data = await req.json();
-  const { content, imageUrl } = data;
+  const { content, imageUrl } = await req.json();
 
   const user = await prisma.user.findUnique({ where: { email: session.user.email } });
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -23,27 +21,25 @@ export async function POST(req: Request) {
     },
     include: {
       author: {
-        select: { name: true, email: true, image: true }, // <<<<<< Buraya image'ı da ekledik
+        select: { name: true, email: true, image: true },
       },
       comments: { include: { user: true } },
       likes: true,
     },
   });
-  
 
   return NextResponse.json(post);
 }
-// app/api/posts/route.ts içine eklenir
+
 export async function GET() {
   const posts = await prisma.post.findMany({
     orderBy: { createdAt: 'desc' },
     include: {
-      author: { select: { name: true, email: true, image: true } }, // image ekledik
+      author: { select: { name: true, email: true, image: true } },
       comments: { include: { user: true } },
       likes: true,
     },
   });
-  
-    return NextResponse.json(posts);
-  }
-  
+
+  return NextResponse.json(posts);
+}
