@@ -24,6 +24,7 @@ export default function LoginPage() {
     } else {
       setError('Geçersiz giriş bilgileri');
     }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -53,5 +54,4 @@ export default function LoginPage() {
       </form>
     </div>
   );
-}
 }
