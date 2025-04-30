@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth" // ✅ Auth.js fonksiyonu
 import { prisma } from "@/lib/prisma"
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest, context: any) {
   const session = await auth()
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest, context: any) {
   try {
     const jobPosts = await prisma.jobPost.findMany({
       orderBy: { createdAt: "desc" },

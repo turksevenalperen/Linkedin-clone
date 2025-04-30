@@ -4,9 +4,9 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET(req: NextRequest, { params }: any) {
+export async function DELETE(req: NextRequest, context: any) {
   const session = await auth();
-  const { id } = params;
+  const { id } = context.params;
 
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
