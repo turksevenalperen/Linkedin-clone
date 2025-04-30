@@ -15,15 +15,15 @@ export default function LoginPage() {
     const res = await signIn('credentials', {
       redirect: false,
       email,
-      password
+      password,
+      callbackUrl: '/dashboard'
     });
-
-    if (res?.ok) {
-      router.push('/dashboard');
+    
+    if (res?.ok && res.url) {
+      router.push(res.url);
     } else {
       setError('Geçersiz giriş bilgileri');
     }
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -53,4 +53,5 @@ export default function LoginPage() {
       </form>
     </div>
   );
+}
 }
