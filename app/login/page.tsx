@@ -19,11 +19,7 @@ export default function LoginPage() {
       callbackUrl: '/dashboard'
     });
     
-    if (res?.ok && res.url) {
-      router.push(res.url);
-    } else {
-      setError('Geçersiz giriş bilgileri');
-    }
+   
   };
 
   return (
