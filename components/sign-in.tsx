@@ -1,6 +1,6 @@
 import { signIn } from "@/auth"
  
-export function SignIn() {
+export function SignIn(p0: string, p1: { redirect: boolean; email: string; password: string; callbackUrl: string }) {
   return (
     <form
       action={async (formData) => {
