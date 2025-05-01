@@ -9,11 +9,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   secret: process.env.AUTH_SECRET, // AUTH_SECRET olmalı
+
+  
   providers: [
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        
       },
       async authorize(credentials: Partial<Record<"email" | "password", unknown>>) {
         if (typeof credentials?.email !== "string" || typeof credentials.password !== "string") return null

@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function DELETE(req: NextRequest, context: any) {
+export async function GET(req: NextRequest, context: any) {
   const session = await auth();
   const { id } = context.params;
 
