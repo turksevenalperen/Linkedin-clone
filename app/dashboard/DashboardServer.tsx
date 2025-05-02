@@ -23,6 +23,10 @@ export default async function DashboardServer() {
     orderBy: { createdAt: 'desc' },
   });
 
+  const sorunsallar = await prisma.sorunsal.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
   return (
     <DashboardClient
       user={{
@@ -31,6 +35,7 @@ export default async function DashboardServer() {
         image: user.image,
       }}
       posts={posts}
+      sorunsallar={sorunsallar} // ✅ burası eklendi
     />
   );
 }

@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation';
 import { Moon, Sun } from 'lucide-react';
 import EditProfileModal from '@/components/EditProfileModal';
 
+
+interface Sorunsal {
+  id: string;
+  title: string;
+}
 interface Props {
   user: {
     name: string;
@@ -13,9 +18,10 @@ interface Props {
     image: string;
   };
   posts: any[];
+  sorunsallar: Sorunsal[]; // ✅ burası eklendi
 }
 
-export default function DashboardClient({ user, posts: initialPosts }: Props) {
+export default function DashboardClient({ user, posts: initialPosts, sorunsallar }: Props) {
   const [content, setContent] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [posts, setPosts] = useState(initialPosts);
@@ -108,6 +114,8 @@ export default function DashboardClient({ user, posts: initialPosts }: Props) {
           <a href="#" className="hover:underline">Makaleler</a>
           <a href="#" className="hover:underline">Kişiler</a>
           <a href="#" className="hover:underline">Learning</a>
+          <a href="/sorunsal" className="hover:underline">Sorunsallar</a>
+
           <a href="/job-posts" className="hover:underline">İş İlanları</a>
 
           <button
@@ -214,9 +222,12 @@ export default function DashboardClient({ user, posts: initialPosts }: Props) {
                   <button onClick={() => toggleLike(post.id)} className="text-sm text-blue-600 hover:underline">
                     ❤️ Beğen ({post.likes?.length || 0})
                   </button>
-                  <button onClick={() => deletePost(post.id)} className="text-sm text-red-600 hover:underline">
-                    Sil
-                  </button>
+                  {post.author && post.author.email === user.email && (
+  <button onClick={() => deletePost(post.id)} className="text-sm text-red-600 hover:underline">
+    Sil
+  </button>
+)}
+
                 </div>
 
                 <div className="mt-4">
@@ -250,14 +261,17 @@ export default function DashboardClient({ user, posts: initialPosts }: Props) {
         {/* Sağ panel */}
         <div className="hidden md:block space-y-4">
           <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow p-6">
-            <h3 className="text-lg font-semibold mb-4">LinkedIn Haberler</h3>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <li>Most US iPhones to come from India 📱</li>
-              <li>Farmers brace for a tough 2026 🚜</li>
-              <li>Snacking is down, anxiety is up 😰</li>
-              <li>You might own a Waymo 🚗</li>
-              <li>Walmart aims to shield China biz 🛒</li>
-            </ul>
+          <h3 className="text-lg font-semibold mb-4">Gündem Sorunsallar</h3>
+<ul className="space-y-2 text-sm">
+  {sorunsallar.slice(0, 10).map((s) => (
+    <li key={s.id}>
+      <a href={`/sorunsal/${s.id}`} className="hover:underline text-blue-600">
+        {s.title}
+      </a>
+    </li>
+  ))}
+</ul>
+
           </div>
         </div>
       </div>

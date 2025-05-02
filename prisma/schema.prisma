@@ -17,8 +17,31 @@ model User {
   comments Comment[]
   likes    Like[]
   jobPosts JobPost[]
-  jobApplications JobApplication[] // 👈 başvurular
+  jobApplications JobApplication[]
+  sorunsals Sorunsal[]            // 👈 kullanıcıya ait başlıklar
+  sorunsalComments SorunsalComment[] // 👈 kullanıcıya ait yorumlar
 }
+
+
+model Sorunsal {
+  id          String             @id @default(cuid())
+  title       String
+  createdAt   DateTime           @default(now())
+  authorId    String
+  author      User               @relation(fields: [authorId], references: [id])
+  comments    SorunsalComment[]
+}
+
+model SorunsalComment {
+  id          String     @id @default(cuid())
+  content     String
+  createdAt   DateTime   @default(now())
+  userId      String
+  sorunsalId  String
+  user        User       @relation(fields: [userId], references: [id])
+  sorunsal    Sorunsal   @relation(fields: [sorunsalId], references: [id], onDelete: Cascade)
+}
+
 
 model JobPost {
   id           String    @id @default(cuid())
