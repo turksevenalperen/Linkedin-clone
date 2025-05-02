@@ -1,12 +1,10 @@
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/auth';
 import YorumForm from '@/components/YorumForm';
-import { type Metadata } from 'next';
 
-interface SorunsalDetailPageProps {
-  params: { id: string };
-}
+export default async function SorunsalDetail(context: any) {
+  const { params } = context;
 
-export default async function SorunsalDetail({ params }: SorunsalDetailPageProps) {
   const sorunsal = await prisma.sorunsal.findUnique({
     where: { id: params.id },
     include: {
