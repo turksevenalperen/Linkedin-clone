@@ -1,7 +1,5 @@
-// app/job-posts/page.tsx
-import { auth } from '@/auth'
-import { prisma } from '@/lib/prisma'
-import JobPostsServer from './JobPostsServer'
+import { auth } from "@/auth"
+import JobPostsServer from "./JobPostsServer"
 
 export default async function JobPostsPage() {
   const session = await auth()
