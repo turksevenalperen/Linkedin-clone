@@ -136,13 +136,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols gap-3">
-              <Button variant="outline" onClick={handleGithubSignIn} type="button">
-                <Github className="mr-2 h-4 w-4" />
-                Github
-              </Button>
-             
-            </div>
+            
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-center text-sm">

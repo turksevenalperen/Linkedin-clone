@@ -53,16 +53,7 @@ export default function RegisterPage() {
     }
   }
 
-  const handleGithubSignIn = () => {
-    setSocialLoading("github")
-    signIn("github", { callbackUrl: "/dashboard" })
-  }
-
-  const handleGoogleSignIn = () => {
-    setSocialLoading("google")
-    signIn("google", { callbackUrl: "/dashboard" })
-  }
-
+  
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4 py-12">
       <div className="w-full max-w-md">
@@ -158,13 +149,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols gap-3">
-              <Button variant="outline" onClick={handleGithubSignIn} type="button" disabled={socialLoading !== null}>
-                <Github className="mr-2 h-4 w-4" />
-                {socialLoading === "github" ? "Yükleniyor..." : "Github"}
-              </Button>
-             
-            </div>
+            
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-center text-sm">

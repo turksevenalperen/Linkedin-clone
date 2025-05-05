@@ -1,8 +1,7 @@
-// auth.ts sss
+// auth.ts
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import GithubProvider from "next-auth/providers/github"
 import { prisma } from "@/lib/prisma"
 import { compare } from "bcryptjs"
 
@@ -19,7 +18,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
         
       },
-      
       async authorize(credentials: Partial<Record<"email" | "password", unknown>>) {
         if (typeof credentials?.email !== "string" || typeof credentials.password !== "string") return null
 
@@ -29,15 +27,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!user) return null
 
-        const isValid = user.password ? await compare(credentials.password, user.password) : false
+        const isValid = await compare(credentials.password, user.password)
         if (!isValid) return null
 
         return user
       },
-    }),
-    GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
   ],
   callbacks: {
