@@ -7,62 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// NextAuth.js için gerekli modeller
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
-// Mevcut User modelinizi güncelleyin
 model User {
   id       String    @id @default(cuid())
   name     String?
   email    String    @unique
-  password String?   // Opsiyonel yapın çünkü OAuth kullanıcılarının şifresi olmayabilir
+  password String
   image    String?
-  emailVerified DateTime?
-  accounts      Account[]
-  sessions      Session[]
   posts    Post[]
   comments Comment[]
   likes    Like[]
   jobPosts JobPost[]
   jobApplications JobApplication[]
-  sorunsals Sorunsal[]
-  sorunsalComments SorunsalComment[]
+  sorunsals Sorunsal[]            // 👈 kullanıcıya ait başlıklar
+  sorunsalComments SorunsalComment[] // 👈 kullanıcıya ait yorumlar
 }
 
-// Diğer modeller aynı kalabilir
+
 model Sorunsal {
   id          String             @id @default(cuid())
   title       String
@@ -93,7 +53,7 @@ model JobPost {
   createdAt    DateTime  @default(now())
   authorId     String
   author       User      @relation(fields: [authorId], references: [id])
-  jobApplications JobApplication[]
+  jobApplications JobApplication[] // 👈 bu ilana gelen başvurular
 }
 
 model JobApplication {
