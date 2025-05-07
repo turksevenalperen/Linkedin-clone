@@ -28,7 +28,7 @@ export default async function Home() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6 text-sm">
               <Link href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                Makaleler
+                Makalelerrr
               </Link>
               <Link href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 Kişiler
