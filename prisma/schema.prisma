@@ -18,8 +18,8 @@ model User {
   likes    Like[]
   jobPosts JobPost[]
   jobApplications JobApplication[]
-  sorunsals Sorunsal[]            // 👈 kullanıcıya ait başlıklar
-  sorunsalComments SorunsalComment[] // 👈 kullanıcıya ait yorumlar
+  sorunsals Sorunsal[]            
+  sorunsalComments SorunsalComment[] 
 }
 
 
@@ -53,7 +53,7 @@ model JobPost {
   createdAt    DateTime  @default(now())
   authorId     String
   author       User      @relation(fields: [authorId], references: [id])
-  jobApplications JobApplication[] // 👈 bu ilana gelen başvurular
+  jobApplications JobApplication[] 
 }
 
 model JobApplication {

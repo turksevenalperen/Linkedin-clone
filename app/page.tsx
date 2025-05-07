@@ -205,7 +205,7 @@ export default async function Home() {
             >
               <Link href="/login">Giriş Yap</Link>
             </Button>
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+         n   <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
               <Link href="/register">Hemen Katıl</Link>
             </Button>
           </div>

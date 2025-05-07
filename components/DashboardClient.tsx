@@ -31,6 +31,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import EditProfileModal from "@/components/EditProfileModal"
+import LogoutButton from "@/components/LogoutButton"
 
 interface Sorunsal {
   id: string
@@ -329,6 +330,8 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                   <span>Profili Düzenle</span>
                 </Button>
 
+                <LogoutButton variant="destructive" fullWidth />
+
                 <Button
                   onClick={() => router.push("/add-job/")}
                   className="w-full justify-start bg-green-600 hover:bg-green-700"
@@ -364,10 +367,15 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                     </Badge>
                   </div>
                 </CardContent>
-                <CardFooter className="flex justify-center pt-2 pb-6">
+                <CardFooter className="flex flex-col gap-2 pt-2 pb-6">
                   <Button onClick={() => setIsEditModalOpen(true)} variant="outline" size="sm" className="w-full">
                     Profili Düzenle
                   </Button>
+                  <LogoutButton
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  />
                 </CardFooter>
               </Card>
 
