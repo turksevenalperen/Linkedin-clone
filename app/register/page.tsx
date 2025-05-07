@@ -21,7 +21,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [socialLoading, setSocialLoading] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -53,7 +52,14 @@ export default function RegisterPage() {
     }
   }
 
-  
+  const handleGithubSignIn = () => {
+    signIn("github", { callbackUrl: "/dashboard" })
+  }
+
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: "/dashboard" })
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4 py-12">
       <div className="w-full max-w-md">

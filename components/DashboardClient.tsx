@@ -1,6 +1,8 @@
 "use client"
 
 import type React from "react"
+import ChatBox from "./ChatBox"
+
 
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
@@ -715,6 +717,7 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
       </div>
 
       <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
+      <ChatBox /> 
     </div>
   )
 }

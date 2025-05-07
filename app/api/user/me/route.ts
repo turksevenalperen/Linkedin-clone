@@ -1,3 +1,4 @@
+//api/user/me/route.ts
 import { auth } from "@/auth";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
