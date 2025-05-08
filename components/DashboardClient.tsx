@@ -34,6 +34,8 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import EditProfileModal from "@/components/EditProfileModal"
 import LogoutButton from "@/components/LogoutButton"
+import Link from "next/link";
+
 
 interface Sorunsal {
   id: string
@@ -42,6 +44,7 @@ interface Sorunsal {
 
 interface Props {
   user: {
+    id: string
     name: string
     email: string
     image: string
@@ -254,10 +257,12 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                   {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </button>
 
-                <Avatar className="hidden md:flex">
-                  <AvatarImage src={user.image || "/default-avatar.png"} alt={user.name} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                </Avatar>
+              <Link href={`/profile/${user.id}`} className="hidden md:flex">
+  <Avatar>
+    <AvatarImage src={user.image || "/default-avatar.png"} alt={user.name} />
+    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+  </Avatar>
+</Link>
 
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -717,7 +722,8 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
       </div>
 
       <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
-      <ChatBox /> 
+        <ChatBox></ChatBox>
+      
     </div>
   )
 }

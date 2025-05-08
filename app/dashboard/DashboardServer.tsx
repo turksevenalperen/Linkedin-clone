@@ -10,7 +10,7 @@ export default async function DashboardServer() {
     where: { email: session.user.email! },
   })
 
-  if (!user || !user.name || !user.email || !user.image) {
+  if (!user || !user.id || !user.name || !user.email || !user.image) {
     return <div>Kullanıcı bilgileri eksik.</div>
   }
 
@@ -30,6 +30,7 @@ export default async function DashboardServer() {
   return (
     <DashboardClient
       user={{
+        id: user.id,
         name: user.name,
         email: user.email,
         image: user.image,

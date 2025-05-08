@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Send, X, MessageSquare, ChevronDown, ChevronUp } from "lucide-react"
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow'
 import { tr } from "date-fns/locale"
+import { io, type Socket } from "socket.io-client"
+import { useSession } from "next-auth/react"
 
 interface User {
   id: string
@@ -23,22 +25,59 @@ interface Message {
   content: string
   createdAt: string
   isRead: boolean
+  senderId: string
+  receiverId: string
   sender: User
   receiver: User
 }
 
-export default function ChatBox() {
+export default function ChatBoxWithSocket() {
+  const { data: session } = useSession()
   const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
-  const [isUserListVisible, setIsUserListVisible] = useState(false)
   const [unreadCounts, setUnreadCounts] = useState<{ [senderId: string]: number }>({})
   const [isChatBoxMinimized, setIsChatBoxMinimized] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const chatBoxRef = useRef<HTMLDivElement>(null)
+  const socketRef = useRef<Socket | null>(null)
+
+  // Socket.io bağlantısı
+  useEffect(() => {
+    if (!session?.user?.id) return
+
+    // Socket.io sunucusuna bağlan
+    fetch("/api/socket")
+
+    socketRef.current = io()
+
+    // Kullanıcı kimliğini socket sunucusuna gönder
+    socketRef.current.emit("join", session.user.id)
+
+    // Yeni mesaj dinle
+    socketRef.current.on("receive_message", (message: Message) => {
+      if (selectedUser && message.senderId === selectedUser.id) {
+        // Seçili kullanıcıdan gelen mesajı ekle
+        setMessages((prev) => [...prev, message])
+        // Mesajı okundu olarak işaretle
+        markMessageAsRead(message.id)
+      } else {
+        // Okunmamış mesaj sayısını güncelle
+        setUnreadCounts((prev) => ({
+          ...prev,
+          [message.senderId]: (prev[message.senderId] || 0) + 1,
+        }))
+      }
+    })
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect()
+      }
+    }
+  }, [session, selectedUser])
 
   // Kullanıcıları çekme
   useEffect(() => {
@@ -74,10 +113,6 @@ export default function ChatBox() {
     }
 
     fetchUnreadCounts()
-
-    // Düzenli olarak okunmamış mesaj sayısını güncelle
-    const interval = setInterval(fetchUnreadCounts, 10000)
-    return () => clearInterval(interval)
   }, [])
 
   // Seçilen kullanıcıya ait mesajları al
@@ -85,10 +120,6 @@ export default function ChatBox() {
     if (!selectedUser) return
 
     fetchMessages()
-
-    // Polling yerine WebSocket kullanılmalı
-    const interval = setInterval(fetchMessages, 3000)
-    return () => clearInterval(interval)
   }, [selectedUser])
 
   // Mesajlar yüklendiğinde otomatik olarak en alta kaydır
@@ -126,17 +157,25 @@ export default function ChatBox() {
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!newMessage.trim() || !selectedUser) return
+    if (!newMessage.trim() || !selectedUser || !session?.user?.id) return
 
     try {
-      await fetch("/api/messages", {
+      const res = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: newMessage, receiverId: selectedUser.id }),
       })
 
+      const message = await res.json()
+
+      // Mesajı socket üzerinden gönder
+      if (socketRef.current) {
+        socketRef.current.emit("new_message", message)
+      }
+
+      // Mesajı yerel olarak ekle
+      setMessages((prev) => [...prev, message])
       setNewMessage("")
-      fetchMessages()
     } catch (error) {
       console.error("Mesaj gönderilirken hata:", error)
     }
@@ -159,6 +198,19 @@ export default function ChatBox() {
     }
   }
 
+  // Tek bir mesajı okundu olarak işaretle
+  async function markMessageAsRead(messageId: string) {
+    try {
+      await fetch(`/api/messages`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId }),
+      })
+    } catch (error) {
+      console.error("Mesaj okundu işaretlenirken hata:", error)
+    }
+  }
+
   // Toplam okunmamış mesaj sayısı
   const totalUnreadCount = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0)
 
@@ -177,9 +229,10 @@ export default function ChatBox() {
     return formatDistanceToNow(new Date(dateString), { addSuffix: true, locale: tr })
   }
 
+  if (!session) return null
+
   return (
     <div
-      ref={chatBoxRef}
       className={`fixed bottom-4 right-4 w-80 md:w-96 bg-white dark:bg-zinc-800 border rounded-lg shadow-lg z-50 transition-all duration-300 ${
         isChatBoxMinimized ? "h-14" : "max-h-[500px]"
       }`}
@@ -234,6 +287,9 @@ export default function ChatBox() {
               ) : (
                 <div className="space-y-2">
                   {users.map((user) => {
+                    // Kendi kullanıcımızı listeden çıkar
+                    if (session?.user?.id && user.id === session.user.id) return null
+
                     const unreadCount = unreadCounts[user.id] || 0
                     return (
                       <Card
@@ -274,18 +330,18 @@ export default function ChatBox() {
                   </p>
                 ) : (
                   messages.map((msg) => {
-                    const isCurrentUser = msg.sender.id === selectedUser.id
+                    const isCurrentUser = session?.user?.id && msg.senderId === session.user.id
                     return (
-                      <div key={msg.id} className={`flex ${isCurrentUser ? "justify-start" : "justify-end"}`}>
+                      <div key={msg.id} className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
                         <div
                           className={`max-w-[80%] p-3 rounded-lg ${
-                            isCurrentUser ? "bg-gray-100 dark:bg-zinc-700" : "bg-blue-500 text-white"
+                            isCurrentUser ? "bg-blue-500 text-white" : "bg-gray-100 dark:bg-zinc-700"
                           }`}
                         >
                           <p className="break-words text-sm">{msg.content}</p>
                           <p
                             className={`text-xs mt-1 ${
-                              isCurrentUser ? "text-gray-500 dark:text-gray-400" : "text-blue-100"
+                              isCurrentUser ? "text-blue-100" : "text-gray-500 dark:text-gray-400"
                             }`}
                           >
                             {formatMessageTime(msg.createdAt)}
