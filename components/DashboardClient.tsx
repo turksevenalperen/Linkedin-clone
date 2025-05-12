@@ -347,6 +347,7 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
 
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 py-6">
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {/* Left Sidebar - Profile */}
             <div className="hidden md:block space-y-4">
@@ -477,13 +478,15 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                     <CardHeader className="pb-3">
                       {post.author && (
                         <div className="flex items-center space-x-3">
-                          <Avatar>
-                            <AvatarImage
-                              src={post.author.image || "/default-avatar.png"}
-                              alt={post.author.name || "Kullanıcı"}
-                            />
-                            <AvatarFallback>{(post.author.name || "K").charAt(0)}</AvatarFallback>
-                          </Avatar>
+                          <Link href={`/profile/${post.author.id}`} className="hidden md:flex">
+  <Avatar>
+    <AvatarImage
+      src={post.author.image || "/default-avatar.png"}
+      alt={post.author.name || "Kullanıcı"}
+    />
+    <AvatarFallback>{(post.author.name || "K").charAt(0)}</AvatarFallback>
+  </Avatar>
+</Link>
                           <div>
                             <p className="font-medium">{post.author.name}</p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(post.createdAt)}</p>
@@ -570,26 +573,36 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                     {/* Comments */}
                     {post.comments?.length > 0 && (
                       <div className="px-6 py-2 bg-gray-50 dark:bg-zinc-800/50">
-                        {post.comments.map((comment: any) => (
-                          <div key={comment.id} className="py-3 flex items-start space-x-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage
-                                src={comment.user?.image || "/default-avatar.png"}
-                                alt={comment.user?.name || "Kullanıcı"}
-                              />
-                              <AvatarFallback>{(comment.user?.name || "K").charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <div className="bg-white dark:bg-zinc-800 rounded-lg px-3 py-2">
-                                <p className="font-medium text-sm">{comment.user?.name || "Kullanıcı"}</p>
-                                <p className="text-sm">{comment.content}</p>
-                              </div>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                {formatDate(comment.createdAt)}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
+                        {post.comments?.length > 0 && (
+  <div className="px-6 py-2 bg-gray-50 dark:bg-zinc-800/50">
+    {post.comments.map((comment: any) => (
+      <div key={comment.id} className="py-3 flex items-start space-x-3">
+        <Link href={`/profile/${comment.user?.id}`} className="shrink-0">
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src={comment.user?.image || "/default-avatar.png"}
+              alt={comment.user?.name || "Kullanıcı"}
+            />
+            <AvatarFallback>{(comment.user?.name || "K").charAt(0)}</AvatarFallback>
+          </Avatar>
+        </Link>
+        <div className="flex-1">
+          <div className="bg-white dark:bg-zinc-800 rounded-lg px-3 py-2">
+            <Link href={`/profile/${comment.user?.id}`}>
+              <p className="font-medium text-sm hover:underline">
+                {comment.user?.name || "Kullanıcı"}
+              </p>
+            </Link>
+            <p className="text-sm">{comment.content}</p>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {formatDate(comment.createdAt)}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
                       </div>
                     )}
 

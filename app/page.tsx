@@ -27,16 +27,10 @@ export default async function Home() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6 text-sm">
-              <Link href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                Makalelerrr
-              </Link>
-              <Link href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                Kişiler
-              </Link>
-              <Link href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                Learning
-              </Link>
-              <Link href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+              
+             
+              
+              <Link href="/job-posts" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 İş İlanları
               </Link>
               <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
@@ -82,7 +76,7 @@ export default async function Home() {
             </p>
             <p className="text-gray-800 dark:text-gray-200 text-sm mt-4">
               LinkedIn'de yeni misiniz?{" "}
-              <Link href="/signup" className="text-blue-600 dark:text-blue-400 hover:underline">
+              <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
                 Hemen katılın
               </Link>
             </p>
@@ -129,10 +123,13 @@ export default async function Home() {
             <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">
               Milyonlarca kişinin iş ilanınızı görmesi için işinizi yayınlayın
             </h2>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+             <Link href="/register" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+                <Button className="bg-blue-600 hover:bg-blue-700">
               <Briefcase className="mr-2 h-4 w-4" />
               İş ilanı yayınla
             </Button>
+              </Link>
+           
           </CardContent>
         </Card>
       </section>
