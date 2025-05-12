@@ -23,7 +23,24 @@ model User {
   sorunsalComments  SorunsalComment[]     // 👈 kullanıcıya ait yorumlar
   sentMessages     Messagee[] @relation("SentMessages")
 receivedMessages Messagee[] @relation("ReceivedMessages")
+  sentFriendRequests     Friendship[] @relation("RequestingUser")
+  receivedFriendRequests Friendship[] @relation("ReceivingUser")
+
 }
+model Friendship {
+  id          String   @id @default(cuid())
+  requester   User     @relation("RequestingUser", fields: [requesterId], references: [id])
+  requesterId String
+
+  recipient   User     @relation("ReceivingUser", fields: [recipientId], references: [id])
+  recipientId String
+
+  status      String   @default("pending") 
+  createdAt   DateTime @default(now())
+
+  @@unique([requesterId, recipientId])
+}
+
 
 model Messagee {
   id          String   @id @default(cuid())

@@ -14,6 +14,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Briefcase, MapPin, Calendar, Search, Edit, Trash2, Users, ChevronDown, ChevronUp, DollarSign, FileText, CheckCircle } from 'lucide-react'
 import ApplicationsModal from "@/components/ApplicationsModal"
+import Navbar from "./PcNavbar"
+import MobileMenu from "./PhoneNavbar"
 
 interface JobPost {
   id: string
@@ -117,7 +119,10 @@ export default function JobPostsClient({ initialPosts }: { initialPosts: JobPost
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+
+    <div> 
+      <Navbar/>
+      <div className="container mx-auto py-8 px-4">
       <Toaster position="top-right" />
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -327,6 +332,10 @@ export default function JobPostsClient({ initialPosts }: { initialPosts: JobPost
       {selectedJobIdForApplications && (
         <ApplicationsModal jobId={selectedJobIdForApplications} onClose={() => setSelectedJobIdForApplications(null)} />
       )}
+
+      <MobileMenu/>
     </div>
+    </div>
+   
   )
 }

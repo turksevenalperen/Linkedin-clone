@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ProfilePageClient from "./ProfilePageClient";
+import Navbar from "@/components/PcNavbar";
 export const dynamic = "force-dynamic";
 
 export default async function UserProfilePage(context: any) {
@@ -34,5 +35,13 @@ export default async function UserProfilePage(context: any) {
     })),
   };
 
-  return <ProfilePageClient user={userWithSerializedDates} />;
+  return (
+
+    <div>
+      <Navbar/>
+    <ProfilePageClient user={userWithSerializedDates} />
+  </div>
+  )
+  
+  ;
 }

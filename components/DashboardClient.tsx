@@ -3,7 +3,6 @@
 import type React from "react"
 import ChatBox from "./ChatBox"
 
-
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -24,6 +23,7 @@ import {
   Plus,
   ImageIcon,
   ChevronRight,
+  AlertCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -31,11 +31,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import EditProfileModal from "@/components/EditProfileModal"
 import LogoutButton from "@/components/LogoutButton"
-import Link from "next/link";
-
+import Link from "next/link"
 
 interface Sorunsal {
   id: string
@@ -51,9 +50,11 @@ interface Props {
   }
   posts: any[]
   sorunsallar: Sorunsal[]
+  recommendedUsers?: any[]
+  hasNoFriends?: boolean
 }
 
-export default function DashboardClient({ user, posts: initialPosts, sorunsallar }: Props) {
+export default function DashboardClient({ user, posts: initialPosts, sorunsallar, hasNoFriends = false, recommendedUsers = [] }: Props) {
   const [content, setContent] = useState("")
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [posts, setPosts] = useState(initialPosts)
@@ -219,19 +220,13 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                   <span className="text-xs mt-1">Ana Sayfa</span>
                 </a>
                 <a
-                  href="#"
+                  href="/friends"
                   className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   <Users className="h-5 w-5" />
                   <span className="text-xs mt-1">Kişiler</span>
                 </a>
-                <a
-                  href="#"
-                  className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                >
-                  <BookOpen className="h-5 w-5" />
-                  <span className="text-xs mt-1">Makaleler</span>
-                </a>
+              
                 <a
                   href="/sorunsal"
                   className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
@@ -257,12 +252,12 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                   {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </button>
 
-              <Link href={`/profile/${user.id}`} className="hidden md:flex">
-  <Avatar>
-    <AvatarImage src={user.image || "/default-avatar.png"} alt={user.name} />
-    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-  </Avatar>
-</Link>
+                <Link href={`/profile/${user.id}`} className="hidden md:flex">
+                  <Avatar>
+                    <AvatarImage src={user.image || "/default-avatar.png"} alt={user.name} />
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                </Link>
 
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -366,10 +361,7 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                   <h2 className="text-xl font-semibold text-center">{user.name}</h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400 text-center">{user.email}</p>
                 </CardHeader>
-                <CardContent className="text-center pb-2">
-                 
-                
-                </CardContent>
+                <CardContent className="text-center pb-2"></CardContent>
                 <CardFooter className="flex flex-col gap-2 pt-2 pb-6">
                   <Button onClick={() => setIsEditModalOpen(true)} variant="outline" size="sm" className="w-full">
                     Profili Düzenle
@@ -460,6 +452,23 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                   </form>
                 </CardContent>
               </Card>
+
+              {/* No Friends Message */}
+              {hasNoFriends &&  (
+                <Card className="overflow-hidden">
+                  <CardContent className="pt-6 pb-6 flex flex-col items-center text-center">
+                    <Users className="h-16 w-16 text-blue-500 mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Henüz gösterilecek gönderi yok</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      Arkadaşlarınızın gönderilerini görmek için bağlantılar kurun.
+                    </p>
+                    <Button onClick={() => router.push("/friends")} className="bg-blue-600 hover:bg-blue-700">
+                      <Users className="h-4 w-4 mr-2" />
+                      Arkadaş Ekle
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Posts */}
               <div className="space-y-6">
@@ -660,21 +669,57 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="flex items-center space-x-3">
-                        <Avatar>
-                          <AvatarImage src={`/placeholder.svg?height=40&width=40&text=${i}`} />
-                          <AvatarFallback>U{i}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-sm">Kullanıcı {i}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Yazılım Geliştirici</p>
-                        </div>
-                        <Button variant="outline" size="sm" className="ml-auto">
-                          Bağlan
-                        </Button>
-                      </div>
-                    ))}
+                    {recommendedUsers.length > 0
+                      ? recommendedUsers.map((user) => (
+                          <div key={user.id} className="flex items-center space-x-3">
+                            <Avatar>
+                              <AvatarImage
+                                src={user.image || `/placeholder.svg?height=40&width=40&text=${user.name.charAt(0)}`}
+                              />
+                              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium text-sm">{user.name}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="ml-auto"
+                              onClick={async () => {
+                                try {
+                                  const res = await fetch("/api/friends/send", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ recipientId: user.id }),
+                                  })
+                                  if (res.ok) {
+                                    alert("Arkadaşlık isteği gönderildi!")
+                                  }
+                                } catch (error) {
+                                  console.error("Error sending friend request:", error)
+                                }
+                              }}
+                            >
+                              Bağlan
+                            </Button>
+                          </div>
+                        ))
+                      : [1, 2, 3].map((i) => (
+                          <div key={i} className="flex items-center space-x-3">
+                            <Avatar>
+                              <AvatarImage src={`/placeholder.svg?height=40&width=40&text=${i}`} />
+                              <AvatarFallback>U{i}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium text-sm">Kullanıcı {i}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Yazılım Geliştirici</p>
+                            </div>
+                            <Button variant="outline" size="sm" className="ml-auto">
+                              Bağlan
+                            </Button>
+                          </div>
+                        ))}
                   </div>
                 </CardContent>
               </Card>
@@ -720,10 +765,9 @@ export default function DashboardClient({ user, posts: initialPosts, sorunsallar
           </div>
         </div>
       </div>
-
       <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
-        <ChatBox></ChatBox>
-      
+      <ChatBox></ChatBox>
+          
     </div>
   )
 }

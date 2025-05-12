@@ -70,6 +70,7 @@ export default function ApplicationsPage() {
   }
 
   return (
+    
     <div className="container mx-auto py-8 px-4 max-w-5xl">
       <div className="flex items-center mb-6">
         <Button variant="ghost" size="sm" className="mr-2" onClick={() => router.back()}>

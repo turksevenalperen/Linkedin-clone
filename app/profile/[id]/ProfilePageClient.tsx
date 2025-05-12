@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow'
 import { tr } from "date-fns/locale";
 import { MessageCircle, Heart } from "lucide-react";
+import Navbar from "@/components/PcNavbar";
 
 type Props = {
   user: {
@@ -26,7 +27,9 @@ type Props = {
 
 export default function ProfilePageClient({ user }: Props) {
   return (
-    <div className="max-w-3xl mx-auto mt-8 px-4 space-y-6">
+    <div>
+     
+      <div className="max-w-3xl mx-auto mt-8 px-4 space-y-6">
       {/* Profil Kartı */}
       <Card>
         <CardHeader>
@@ -83,5 +86,7 @@ export default function ProfilePageClient({ user }: Props) {
         ))
       )}
     </div>
+    </div>
+    
   );
 }

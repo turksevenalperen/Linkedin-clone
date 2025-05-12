@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MessageSquare, Plus, ChevronRight, TrendingUp, Clock } from 'lucide-react'
+import { MessageSquare, Plus, ChevronRight, TrendingUp, Clock, Home, Users, Briefcase } from 'lucide-react'
+import Navbar from "@/components/PcNavbar"
+import MobileMenu from "@/components/PhoneNavbar"
+
 
 export default async function SorunsalPage() {
   const sorunsals = await prisma.sorunsal.findMany({
@@ -42,7 +45,11 @@ export default async function SorunsalPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
+    <div>
+      <Navbar />
+       <div className="container mx-auto py-8 px-4 max-w-4xl">
+  
+    
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold mb-2">Gündem Sorunsallar</h1>
@@ -117,7 +124,54 @@ export default async function SorunsalPage() {
             </Card>
           ))
         )}
+ {/* Mobile Bottom Navigation */}
+ <div>
+     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t dark:border-zinc-800 z-40">
+          <div className="flex justify-around items-center h-16">
+            <a
+              href="/"
+              className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              <Home className="h-5 w-5" />
+              <span className="text-xs mt-1">Ana Sayfa</span>
+            </a>
+            <a
+              href="#"
+              className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              <Users className="h-5 w-5" />
+              <span className="text-xs mt-1">Kişiler</span>
+            </a>
+            <a href="/add-job/" className="flex flex-col items-center text-green-600 dark:text-green-400">
+              <Plus className="h-6 w-6 p-1 bg-green-100 dark:bg-green-900/30 rounded-full" />
+              <span className="text-xs mt-1">İlan Ver</span>
+            </a>
+            <a
+              href="/sorunsal"
+              className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              <MessageSquare className="h-5 w-5" />
+              <span className="text-xs mt-1">Sorunsallar</span>
+            </a>
+            <a
+              href="/job-posts"
+              className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              <Briefcase className="h-5 w-5" />
+              <span className="text-xs mt-1">İş İlanları</span>
+            </a>
+          </div>
+        </div>
       </div>
+ </div>
+     
+
+      </div>
+      
     </div>
+    
+  
+    
+   
   )
 }
