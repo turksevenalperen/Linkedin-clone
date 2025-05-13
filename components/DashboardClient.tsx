@@ -41,33 +41,21 @@ interface Sorunsal {
   title: string
 }
 
-interface User {
-  id: string
-  name: string
-  email: string
-  image: string
-}
-
 interface Props {
-  user: User
+  user: {
+    id: string
+    name: string
+    email: string
+    image: string
+  }
   posts: any[]
   sorunsallar: Sorunsal[]
-  recommendedUsers?: User[]  // Burada User türü kullandık
+  recommendedUsers?: any[]
   hasNoFriends?: boolean
 }
 
-
-export default function DashboardClient({
-  user,
-  posts: initialPosts,
-  sorunsallar,
-  recommendedUsers = [],
-  hasNoFriends = false,
-}: Props) {
+export default function DashboardClient({ user, posts: initialPosts, sorunsallar, hasNoFriends = false, recommendedUsers = [] }: Props) {
   const [content, setContent] = useState("")
-  const [sending, setSending] = useState<string | null>(null)
-  const [sentIds, setSentIds] = useState<string[]>([])
-
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [posts, setPosts] = useState(initialPosts)
   const [commentInputs, setCommentInputs] = useState<{ [key: string]: string }>({})
@@ -76,10 +64,6 @@ export default function DashboardClient({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [users, setUsers] = useState<User[]>([]) 
-    const [showAllUsers, setShowAllUsers] = useState(false) // Tüm kullanıcıları gösterme durumu
-
-
   const router = useRouter()
 
   useEffect(() => {
@@ -92,52 +76,6 @@ export default function DashboardClient({
       document.documentElement.classList.add("dark")
     }
   }, [])
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const res = await fetch("/api/user")
-      const data = await res.json()
-      console.log(data) // BURADAN GELEN VERİYİ KONTROL ET
-      setUsers(data) // Burada User[] tipinde veriyi bekliyoruz
-    }
-    fetchUsers()
-  }, [])
-  const getRandomUsers = () => {
-    const shuffledUsers = [...users].sort(() => Math.random() - 0.5) // Kullanıcıları karıştırıyoruz
-    return shuffledUsers.slice(0, 3) // İlk 3 kullanıcıyı alıyoruz
-  }
-
-   const sendRequest = async (recipientId: string) => {
-    setSending(recipientId)
-    const res = await fetch("/api/friends/send", {
-      method: "POST",
-      body: JSON.stringify({ recipientId }),
-    })
-
-    if (res.ok) {
-      setSentIds([...sentIds, recipientId])
-    }
-
-    setSending(null)
-  }
-  const sendFriendRequest = async (recipientId: string) => {
-  setSending(recipientId)
-  try {
-    const res = await fetch("/api/friends/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ recipientId }),
-    })
-    if (res.ok) {
-      setSentIds((prev) => [...prev, recipientId])
-    }
-  } catch (error) {
-    console.error("Arkadaşlık isteği gönderilirken hata:", error)
-  } finally {
-    setSending(null)
-  }
-}
-
 
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode
@@ -169,6 +107,7 @@ export default function DashboardClient({
   async function fetchPosts() {
     const res = await fetch("/api/posts", { cache: "no-store" })
     const data = await res.json()
+    setPosts(data)
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -743,58 +682,8 @@ export default function DashboardClient({
                 </CardContent>
               </Card>
 
-  <Card className="my-4">
-  <CardHeader>Önerilen Bağlantılar</CardHeader>
-<div className="space-y-4">
-  {users.length === 0 ? (
-    <p className="text-center text-gray-500">Kullanıcı bulunamadı.</p>
-  ) : (
-    (showAllUsers ? users : getRandomUsers()).map((user) => (
-      <div
-        key={user.id}
-        className="flex justify-between items-center border p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200"
-      >
-        <Link href={`/profile/${user.id}`} className="flex w-full">
-          <div className="flex items-center space-x-3 w-full">
-            <Avatar className="cursor-pointer">
-              <AvatarImage
-                src={user.image || "/default-avatar.png"}
-                alt={user.name || "User Avatar"}
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <AvatarFallback>{user.name?.[0] || "?"}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <p className="font-semibold text-lg">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
-            </div>
-          </div>
-        </Link>
-        <button
-          onClick={() => sendRequest(user.id)}
-          disabled={sending === user.id || sentIds.includes(user.id)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg disabled:opacity-50 w-32 h-15 font-semibold transition-colors duration-200 hover:bg-blue-600"
-        >
-          {sentIds.includes(user.id)
-            ? "İstek Gönderildi"
-            : sending === user.id
-            ? "Gönderiliyor..."
-            : "Arkadaş Ekle"}
-        </button>
-      </div>
-    ))
-  )}
-</div>
-
-<div className="text-center mt-4">
-  <Link href="/friends" className="text-blue-600 hover:underline font-medium">
-    <span>Tümünü Gör</span>
-  </Link>
-</div>
-
-       
-</Card>
-
+             
+              
             </div>
           </div>
         </main>

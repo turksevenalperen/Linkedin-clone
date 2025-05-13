@@ -31,36 +31,26 @@ export default async function DashboardServer() {
   );
 
   const hasNoFriends = friendIds.length === 0;
+  const isAlperen = user.id === ALPEREN_ID;
 
-  let posts = [];
+  // Hesaplanmış yazarlar listesi
+  const visibleAuthorIds = hasNoFriends && !isAlperen
+    ? [user.id, ALPEREN_ID] // Sadece kendi ve Alperen'in postları
+    : [...friendIds, user.id]; // Arkadaşlar + kendi postları
 
-  if (hasNoFriends && user.id !== ALPEREN_ID) {
-    // If no friends and user is not Alperen, fetch Alperen's posts
-    posts = await prisma.post.findMany({
-      where: {
-        authorId: ALPEREN_ID,
+  const posts = await prisma.post.findMany({
+    where: {
+      authorId: {
+        in: visibleAuthorIds,
       },
-      include: {
-        author: true,
-        comments: { include: { user: true } },
-        likes: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  } else {
-    // Fetch posts from user's friends
-    posts = await prisma.post.findMany({
-      where: {
-        authorId: { in: friendIds },
-      },
-      include: {
-        author: true,
-        comments: { include: { user: true } },
-        likes: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  }
+    },
+    include: {
+      author: true,
+      comments: { include: { user: true } },
+      likes: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
 
   // Fetch all sorunsallar
   const sorunsallar = await prisma.sorunsal.findMany({
