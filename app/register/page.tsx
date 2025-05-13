@@ -61,7 +61,7 @@ export default function RegisterPage() {
             href="/"
             className="inline-block text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent"
           >
-            LinkedIn
+            DevApp
           </Link>
         </div>
 
@@ -167,7 +167,7 @@ export default function RegisterPage() {
         </Card>
 
         <div className="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-          Kayıt olarak, LinkedIn'in{" "}
+          Kayıt olarak, DevApp'in{" "}
           <Link href="#" className="text-blue-600 dark:text-blue-400 hover:underline">
             Kullanım Koşulları
           </Link>

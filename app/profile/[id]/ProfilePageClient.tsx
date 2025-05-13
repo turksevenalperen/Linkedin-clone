@@ -1,12 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { formatDistanceToNow } from 'date-fns/formatDistanceToNow'
+import { Button } from "@/components/ui/button";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { tr } from "date-fns/locale";
-import { MessageCircle, Heart } from "lucide-react";
-import Navbar from "@/components/PcNavbar";
+import { MessageCircle, Heart, Trash2 } from "lucide-react";
 
 type Props = {
   user: {
@@ -26,67 +27,93 @@ type Props = {
 };
 
 export default function ProfilePageClient({ user }: Props) {
+  const [posts, setPosts] = useState(user.posts);
+
+  async function deletePost(postId: string) {
+    if (!confirm("Bu gönderiyi silmek istediğine emin misin?")) return;
+
+    const res = await fetch(`/api/posts/${postId}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setPosts((prev) => prev.filter((post) => post.id !== postId));
+    }
+  }
+
   return (
     <div>
-     
       <div className="max-w-3xl mx-auto mt-8 px-4 space-y-6">
-      {/* Profil Kartı */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center space-x-4">
-            <Avatar className="w-16 h-16">
-              <AvatarImage src={user.image || "/default-avatar.png"} alt={user.name || "Profil"} />
-              <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <CardTitle>{user.name || "İsimsiz Kullanıcı"}</CardTitle>
-              <p className="text-sm text-gray-500">{user.email}</p>
+        {/* Profil Kartı */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center space-x-4">
+              <Avatar className="w-16 h-16">
+                <AvatarImage src={user.image || "/default-avatar.png"} alt={user.name || "Profil"} />
+                <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <CardTitle>{user.name || "İsimsiz Kullanıcı"}</CardTitle>
+                <p className="text-sm text-gray-500">{user.email}</p>
+              </div>
             </div>
-          </div>
-        </CardHeader>
-      </Card>
+          </CardHeader>
+        </Card>
 
-      <Separator />
+        <Separator />
 
-      {/* Postlar */}
-      {user.posts.length === 0 ? (
-        <p className="text-center text-gray-500">Hiç post paylaşmamışsın.</p>
-      ) : (
-        user.posts.map((post) => (
-          <Card key={post.id}>
-            <CardHeader>
-              <CardTitle className="text-base">{post.content}</CardTitle>
-              <p className="text-xs text-gray-500">
-                {formatDistanceToNow(new Date(post.createdAt), {
-                  addSuffix: true,
-                  locale: tr,
-                })}
-              </p>
-            </CardHeader>
-            {post.imageUrl && (
-              <CardContent>
-                <img
-                  src={post.imageUrl}
-                  alt="Post görseli"
-                  className="rounded-md max-h-96 w-full object-cover"
-                />
-              </CardContent>
-            )}
-            <CardFooter className="flex space-x-4 text-sm text-gray-500">
-              <div className="flex items-center space-x-1">
-                <MessageCircle className="w-4 h-4" />
-                <span>{post.commentsCount}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Heart className="w-4 h-4" />
-                <span>{post.likesCount}</span>
-              </div>
-            </CardFooter>
-          </Card>
-        ))
-      )}
+        {/* Postlar */}
+        {posts.length === 0 ? (
+          <p className="text-center text-gray-500">Hiç post paylaşmamışsın.</p>
+        ) : (
+          posts.map((post) => (
+            <Card key={post.id}>
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <div>
+                  <CardTitle className="text-base">{post.content}</CardTitle>
+                  <p className="text-xs text-gray-500">
+                    {formatDistanceToNow(new Date(post.createdAt), {
+                      addSuffix: true,
+                      locale: tr,
+                    })}
+                  </p>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => deletePost(post.id)}
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 h-8 w-8"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Sil</span>
+                </Button>
+              </CardHeader>
+
+              {post.imageUrl && (
+                <CardContent>
+                  <img
+                    src={post.imageUrl}
+                    alt="Post görseli"
+                    className="rounded-md max-h-96 w-full object-cover"
+                  />
+                </CardContent>
+              )}
+
+              <CardFooter className="flex space-x-4 text-sm text-gray-500">
+                <div className="flex items-center space-x-1">
+                  <MessageCircle className="w-4 h-4" />
+                  <span>{post.commentsCount}</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Heart className="w-4 h-4" />
+                  <span>{post.likesCount}</span>
+                </div>
+              </CardFooter>
+            </Card>
+          ))
+        )}
+      </div>
     </div>
-    </div>
-    
   );
 }

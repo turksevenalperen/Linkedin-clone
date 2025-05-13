@@ -22,7 +22,7 @@ export default async function Home() {
               href="/"
               className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent"
             >
-              LinkedIn
+              DevApp
             </Link>
 
             {/* Desktop Navigation */}
@@ -71,11 +71,11 @@ export default async function Home() {
           </h1>
           <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
             <p className="text-xs text-gray-600 dark:text-gray-400 text-center mt-2 max-w-xs">
-              Devam Et seçeneğini tıklayarak veya oturum açarak LinkedIn Kullanıcı Anlaşması'nı, Gizlilik Politikası'nı
+              Devam Et seçeneğini tıklayarak veya oturum açarak DevApp Kullanıcı Anlaşması'nı, Gizlilik Politikası'nı
               ve Çerez Politikası'nı kabul etmiş olursunuz.
             </p>
             <p className="text-gray-800 dark:text-gray-200 text-sm mt-4">
-              LinkedIn'de yeni misiniz?{" "}
+              DevApp'de yeni misiniz?{" "}
               <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
                 Hemen katılın
               </Link>
@@ -142,7 +142,7 @@ export default async function Home() {
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    LinkedIn size nasıl yardımcı olabilir?
+                    DevApp size nasıl yardımcı olabilir?
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                     Kariyer fırsatları, ağ oluşturma ve daha fazlası hakkında bilgi edinin
@@ -191,7 +191,7 @@ export default async function Home() {
       <section className="w-full py-12 md:py-16 px-4 md:px-6 bg-blue-50 dark:bg-blue-900/20">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">
-            LinkedIn'deki iş arkadaşlarınıza, okul arkadaşlarınıza ve dostlarınıza katılın.
+            DevApp'deki iş arkadaşlarınıza, okul arkadaşlarınıza ve dostlarınıza katılın.
           </h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -215,7 +215,7 @@ export default async function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                LinkedIn
+                DevApp
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">© 2025</span>
             </div>

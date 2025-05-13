@@ -60,7 +60,7 @@ export default function LoginPage() {
             href="/"
             className="inline-block text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent"
           >
-            LinkedIn
+            DevApp
           </Link>
         </div>
 
