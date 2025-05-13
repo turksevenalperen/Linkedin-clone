@@ -6,21 +6,6 @@ import Navbar from "@/components/PcNavbar";
 export const dynamic = "force-dynamic";
 
 export default async function UserProfilePage(context: any) {
-  async function deletePost(postId: string) {
-    if (!confirm("Bu gönderiyi silmek istediğine emin misin?")) return
-
-    const res = await fetch(`/api/posts/${postId}`, {
-      method: "DELETE",
-    })
-
-    if (res.ok) fetchPosts()
-  }
-
-   async function fetchPosts() {
-    const res = await fetch("/api/posts", { cache: "no-store" })
-    const data = await res.json()
-    setPosts(data)
-  }
   const { params } = context;
 
   const user = await prisma.user.findUnique({

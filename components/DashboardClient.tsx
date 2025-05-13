@@ -169,7 +169,6 @@ export default function DashboardClient({
   async function fetchPosts() {
     const res = await fetch("/api/posts", { cache: "no-store" })
     const data = await res.json()
-    setPosts(data)
   }
 
   async function handleSubmit(e: React.FormEvent) {
